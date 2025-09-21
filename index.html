@@ -432,7 +432,7 @@
             }, 3000);
         }
 
-        // Handle button responses
+        // Handle button responses (fixed: Yes = Good to know, No = Poem)
         function handleResponse(answer) {
             const responseDiv = document.getElementById('response');
             const poemContainer = document.getElementById('poemContainer');
@@ -441,7 +441,7 @@
             responseDiv.style.display = 'block';
             buttons.style.display = 'none';
             
-            if (answer === 'no') {
+            if (answer === 'yes') {
                 responseDiv.textContent = 'Good to know :)';
                 responseDiv.style.color = '#cbd5e0';
             } else {
