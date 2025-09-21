@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You're Not Alone</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            color: #e2e8f0;
+            position: relative;
+        }
+
+        .music-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(45, 55, 72, 0.9);
+            border-radius: 15px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .music-btn {
+            background: none;
+            border: none;
+            color: #e2e8f0;
+            font-size: 1em;
+            cursor: pointer;
+            padding: 5px 15px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .music-btn:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .volume-slider {
+            width: 80px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            background: #e2e8f0;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .credits {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(45, 55, 72, 0.8);
+            color: #a0aec0;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.9em;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .greeting-card {
+            background: rgba(74, 85, 104, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 25px;
+            padding: 60px 40px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(20px);
+            animation: slideIn 1s ease-out;
+        }
+
+        .question {
+            font-size: 2.5em;
+            color: #f7fafc;
+            margin-bottom: 40px;
+            font-weight: 300;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.3em;
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 300;
+            letter-spacing: 1px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #f7fafc;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .response {
+            display: none;
+            font-size: 1.8em;
+            color: #e2e8f0;
+            margin: 30px 0;
+            font-weight: 300;
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        .poem-container {
+            display: none;
+            background: rgba(45, 55, 72, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 25px;
+            padding: 50px 40px;
+            margin-top: 30px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+            animation: poetryReveal 1.2s ease-out;
+        }
+
+        .poem {
+            font-size: 1.4em;
+            line-height: 1.8;
+            color: #f7fafc;
+            font-style: italic;
+            text-align: left;
+            max-width: 600px;
+            margin: 0 auto;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .poem p {
+            margin-bottom: 25px;
+            animation: lineReveal 0.8s ease-out both;
+        }
+
+        .poem p:nth-child(2) { animation-delay: 0.2s; }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-element {
+            position: absolute;
+            font-size: 1.2em;
+            color: rgba(226, 232, 240, 0.1);
+            animation: float 8s infinite ease-in-out;
+        }
+
+        .floating-element:nth-child(odd) {
+            animation-delay: -2s;
+        }
+
+        .floating-element:nth-child(even) {
+            animation-delay: -4s;
+        }
+
+        .mist {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.2;
+        }
+
+        .mist::before {
+            content: '•';
+            font-size: 1.5em;
+            color: rgba(226, 232, 240, 0.3);
+            animation: mistFloat 3s infinite ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes poetryReveal {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes lineReveal {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.1;
+            }
+            50% {
+                transform: translateY(-80px) rotate(180deg);
+                opacity: 0.03;
+            }
+        }
+
+        @keyframes mistFloat {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateY(-20px) rotate(90deg);
+                opacity: 0.1;
+            }
+        }
+
+        .title {
+            font-size: 2em;
+            color: #f7fafc;
+            margin-bottom: 30px;
+            font-weight: 300;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .music-controls {
+                top: 10px;
+                right: 10px;
+                padding: 10px;
+                gap: 10px;
+            }
+            
+            .credits {
+                bottom: 10px;
+                left: 10px;
+                font-size: 0.8em;
+            }
+            
+            .greeting-card {
+                padding: 40px 25px;
+            }
+            
+            .question {
+                font-size: 2em;
+            }
+            
+            .btn {
+                padding: 12px 30px;
+                font-size: 1.1em;
+            }
+            
+            .poem {
+                font-size: 1.2em;
+            }
+
+            .volume-slider {
+                width: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements"></div>
+    
+    <div class="music-controls">
+        <button class="music-btn" id="playPause">Play</button>
+        <div class="volume-control">
+            <span>Volume</span>
+            <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50">
+        </div>
+    </div>
+
+    <div class="credits">
+        Created by Lhandy
+    </div>
+    
+    <div class="container">
+        <div class="greeting-card">
+            <div class="title">In the Quiet Moments</div>
+            <div class="question">Are you okay?</div>
+            <div class="buttons">
+                <button class="btn btn-yes" onclick="handleResponse('yes')">Yes</button>
+                <button class="btn btn-no" onclick="handleResponse('no')">No</button>
+            </div>
+            <div class="response" id="response"></div>
+            <div class="poem-container" id="poemContainer">
+                <div class="poem">
+                    <p>I know it's tough, the road feels long,<br>
+                    But you're still brave, you're still strong.<br>
+                    The dark won't last, the light will stay,<br>
+                    And I'll be with you all the way.</p>
+                    
+                    <p>You don't have to face the storm alone,<br>
+                    My hand is here, you're not on your own.<br>
+                    Through highs and lows, through night and day,<br>
+                    I'm here for you it'll be okay.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="backgroundMusic" loop></audio>
+
+    <script>
+        let audio = document.getElementById('backgroundMusic');
+        let isPlaying = false;
+
+        // Set your song here (local file or URL)
+        audio.src = "seasons.mp3"; // replace with your file
+        audio.load();
+
+        // Play/Pause functionality
+        document.getElementById('playPause').addEventListener('click', function() {
+            if (audio.src) {
+                if (isPlaying) {
+                    audio.pause();
+                    this.textContent = 'Play';
+                    isPlaying = false;
+                } else {
+                    audio.play().catch(e => console.log('Playback failed:', e));
+                    this.textContent = 'Pause';
+                    isPlaying = true;
+                }
+            }
+        });
+
+        // Volume control
+        document.getElementById('volumeSlider').addEventListener('input', function() {
+            audio.volume = this.value / 100;
+        });
+
+        // Set initial volume
+        audio.volume = 0.5;
+
+        // Floating elements
+        function createFloatingElements() {
+            const elementsContainer = document.querySelector('.floating-elements');
+            const symbols = ['•', '·', '◦', '○'];
+            
+            for (let i = 0; i < 10; i++) {
+                const element = document.createElement('div');
+                element.className = 'floating-element';
+                element.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                element.style.left = Math.random() * 100 + '%';
+                element.style.top = Math.random() * 100 + '%';
+                element.style.animationDelay = Math.random() * 8 + 's';
+                element.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                elementsContainer.appendChild(element);
+            }
+        }
+
+        // Mist effect
+        function createMist(x, y) {
+            const mist = document.createElement('div');
+            mist.className = 'mist';
+            mist.style.left = x + 'px';
+            mist.style.top = y + 'px';
+            document.body.appendChild(mist);
+            
+            setTimeout(() => {
+                mist.remove();
+            }, 3000);
+        }
+
+        // Handle button responses
+        function handleResponse(answer) {
+            const responseDiv = document.getElementById('response');
+            const poemContainer = document.getElementById('poemContainer');
+            const buttons = document.querySelector('.buttons');
+            
+            responseDiv.style.display = 'block';
+            buttons.style.display = 'none';
+            
+            if (answer === 'no') {
+                responseDiv.textContent = 'Good to know :)';
+                responseDiv.style.color = '#cbd5e0';
+            } else {
+                responseDiv.textContent = 'Here\'s something for you...';
+                responseDiv.style.color = '#e2e8f0';
+                
+                setTimeout(() => {
+                    poemContainer.style.display = 'block';
+                    for (let i = 0; i < 6; i++) {
+                        setTimeout(() => {
+                            createMist(
+                                Math.random() * window.innerWidth,
+                                Math.random() * window.innerHeight
+                            );
+                        }, i * 400);
+                    }
+                }, 1000);
+            }
+        }
+
+        // Mouse mist
+        let lastMistTime = 0;
+        document.addEventListener('mousemove', (e) => {
+            const now = Date.now();
+            if (now - lastMistTime > 1000) {
+                if (Math.random() < 0.03) {
+                    createMist(e.clientX, e.clientY);
+                }
+                lastMistTime = now;
+            }
+        });
+
+        createFloatingElements();
+    </script>
+</body>
+</html>
